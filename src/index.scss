@@ -1,0 +1,39 @@
+:root {
+  --background-color: #f7f8fa;
+  background-color: var(--background-color);
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.adm-nav-bar {
+  background-color: #fff;
+}
+
+.container {
+  padding: 1rem;
+}
+
+.indent {
+  text-indent: 2em;
+
+  &:not(:first-child) {
+    margin-top: 0.5rem;
+  }
+}
+
+.qualitative {
+  margin-right: 0.5rem;
+}
+
+.average {
+  font-family: monospace;
+}
+
+// 强调字体，加粗、黑色
+.emphasize {
+  font-weight: bold;
+  color: #000;
+}
