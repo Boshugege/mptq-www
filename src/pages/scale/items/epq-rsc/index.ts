@@ -92,14 +92,17 @@ export const calculateEpqRscResult = (
     v.range[1] ? age >= v.range[0] && age <= v.range[1] : age >= v.range[0],
   )!
 
-  const data: EpqRscResult = Object.keys(sums).reduce((result, K) => {
-    const score =
-      50 + roundToDecimalPlaces((10 * (sums[K] - record[K].M)) / record[K].SD)
+  const data: EpqRscResult = (Object.keys(sums) as EpqRscDimension[]).reduce(
+    (result: EpqRscResult, K: EpqRscDimension) => {
+      const score =
+        50 + roundToDecimalPlaces((10 * (sums[K] - record[K].M)) / record[K].SD)
 
-    result[K] = { score, kind: matchKind(score) }
+      result[K] = { score, kind: matchKind(score) }
 
-    return result
-  }, {} as EpqRscResult)
+      return result
+    },
+    {} as EpqRscResult,
+  )
 
   return data
 }

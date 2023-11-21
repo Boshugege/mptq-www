@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom'
-import { Divider, NoticeBar, Collapse, Tag } from 'antd-mobile'
+import { NoticeBar, Collapse, Tag } from 'antd-mobile'
 import { getTemperament } from '~/pages/scale/items/epq-rsc'
 import CoordinateSystem from './coordinate-system'
 import './index.scss'
