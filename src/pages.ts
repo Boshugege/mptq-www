@@ -1,7 +1,10 @@
 import { lazy } from 'react'
 
 export const LazyHome = lazy(() => import('~/pages/list/index'))
-export const LazyQuestion = lazy(() => import('~/pages/scale/question/index'))
+export const LazyQuestion = lazy(
+  () => import('~/pages/scale/components/question'),
+)
+export const LazyIdea = lazy(() => import('~/pages/scale/components/idea'))
 
 export const LazyCommonQuestion = lazy(
   () => import('~/pages/scale/items/common/question'),
@@ -46,6 +49,7 @@ export const LazyEptRscScale = lazy(
 export const LazyScale = lazy(() => import('~/pages/scale/index'))
 
 export const LazyCircle = lazy(() => import('~/pages/result/components/circle'))
+export const LazyBadge = lazy(() => import('~/pages/result/components/badge'))
 
 export const LazyResult = lazy(() => import('~/pages/result/index'))
 export const LazyCommonResult = lazy(

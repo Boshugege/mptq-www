@@ -3,6 +3,8 @@ import { NoticeBar, Collapse, Tag } from 'antd-mobile'
 import { getTemperament } from '~/pages/scale/items/epq-rsc'
 import CoordinateSystem from './coordinate-system'
 import './index.scss'
+import suspense from '~/advance/suspense'
+import { LazyBadge } from '~/pages'
 
 const EpqRscResult = () => {
   const location = useLocation()
@@ -44,10 +46,6 @@ const EpqRscResult = () => {
             key={k}
             title={
               <div>
-                <Tag color="primary" className="qualitative average">
-                  {result[k].score.toFixed(2)}
-                </Tag>
-
                 <Tag
                   color={
                     result[k].kind.level === 0
@@ -61,7 +59,13 @@ const EpqRscResult = () => {
                   {result[k].kind.label}
                 </Tag>
 
-                <span>{interpretation.dimensions[k].label}</span>
+                {suspense(
+                  <LazyBadge
+                    badge={result[k].score.toFixed(2)}
+                    content={interpretation.dimensions[k].label}
+                    right={20}
+                  />,
+                )}
               </div>
             }
           >

@@ -10,6 +10,7 @@ import {
   LazyEPTResult,
   LazyEpqRscResult,
 } from '~/pages'
+import './index.scss'
 
 export const WARNING =
   '本测试结果仅供参考，不提供医疗建议，如果你确实感到不适可参考本结果去精神专科医院咨询心理医生。'
@@ -56,7 +57,7 @@ const Result = () => {
         wrap
         color="info"
         style={{ marginBottom: '1rem' }}
-        content="您的测试结果本网站不会保存，如果需要保存请自行截图保存。"
+        content="您的测试结果本网站不会保存，如果需要保存请截图。"
       />
 
       {render()}

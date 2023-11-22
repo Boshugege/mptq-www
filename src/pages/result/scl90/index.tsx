@@ -5,22 +5,24 @@ import {
   Tag,
   AutoCenter,
   Card,
-} from "antd-mobile";
-import { ExclamationCircleFill, CheckCircleFill } from "antd-mobile-icons";
-import Canvas from "@antv/f2-react";
-import { Chart, Axis, Area, Point, Line } from "@antv/f2";
-import { Color } from "~/utils/color";
-import { useLocation } from "react-router-dom";
-import Alert from "~/components/alert";
-import "./index.scss";
-import { WARNING } from "..";
+} from 'antd-mobile'
+import { ExclamationCircleFill, CheckCircleFill } from 'antd-mobile-icons'
+import Canvas from '@antv/f2-react'
+import { Chart, Axis, Area, Point, Line } from '@antv/f2'
+import { Color } from '~/utils/color'
+import { useLocation } from 'react-router-dom'
+import Alert from '~/components/alert'
+import './index.scss'
+import { WARNING } from '..'
+import suspense from '~/advance/suspense'
+import { LazyBadge } from '~/pages'
 
 interface RadarChartProps {
-  data: { item: string; value: number }[];
+  data: { item: string; value: number }[]
 }
 
-const yesBaseColor = new Color(129, 100, 32).hex();
-const noBaseColor = new Color(33, 73, 64).hex();
+const yesBaseColor = new Color(129, 100, 32).hex()
+const noBaseColor = new Color(33, 73, 64).hex()
 
 const RadarChart = ({ data }: RadarChartProps) => {
   return (
@@ -46,36 +48,36 @@ const RadarChart = ({ data }: RadarChartProps) => {
         x="item"
         y="value"
         color={{
-          field: "value",
+          field: 'value',
           callback: (v: number) => {
-            return v >= 2 ? noBaseColor : yesBaseColor;
+            return v >= 2 ? noBaseColor : yesBaseColor
           },
         }}
       />
     </Chart>
-  );
-};
+  )
+}
 
 const Scl90Result = () => {
-  const location = useLocation();
+  const location = useLocation()
   const {
     result,
     interpretation,
   }: { result: Scl90Result; interpretation: Scl90Interpretation } =
-    location.state;
+    location.state
 
   return (
     <div className="container text">
       <Alert
         content={[
           <NoticeBar content={WARNING} wrap color="alert" />,
-          "本测试仅适用于初步的症状筛选，存在一定的误差。如果您的测试结果中有某些因子为阳性，则需要选择对应症状的专用测试或去寻找心理医生进行进一步评估。",
+          '本测试仅适用于初步的症状筛选，存在一定的误差。如果您的测试结果中有某些因子为阳性，则需要选择对应症状的专用测试或去寻找心理医生进行进一步评估。',
         ]}
         defaultShow={true}
         wait={5}
       />
 
-      <div id="chart" style={{ width: "100%", height: 300 }}>
+      <div id="chart" style={{ width: '100%', height: 300 }}>
         <Canvas pixelRatio={window.devicePixelRatio}>
           <RadarChart
             data={(Object.keys(result.symptomsAverage) as Scl90Symptom[]).map(
@@ -89,13 +91,13 @@ const Scl90Result = () => {
       </div>
 
       {result.total >= 160 ||
-        result.positiveAmount > 43 ||
-        Object.values(result.symptomsAverage).some((value) => value > 2) ? (
+      result.positiveAmount > 43 ||
+      Object.values(result.symptomsAverage).some((value) => value > 2) ? (
         <Card>
           <AutoCenter className="scl-90-result-status">
             <ExclamationCircleFill
               color="#ff8f1f"
-              style={{ marginRight: "0.5rem" }}
+              style={{ marginRight: '0.5rem' }}
             />
             您存在一些阳性症状
           </AutoCenter>
@@ -105,7 +107,7 @@ const Scl90Result = () => {
           <AutoCenter className="scl-90-result-status">
             <CheckCircleFill
               color="#00b578"
-              style={{ marginRight: "0.5rem" }}
+              style={{ marginRight: '0.5rem' }}
             />
             您没有任何阳性症状
           </AutoCenter>
@@ -125,13 +127,7 @@ const Scl90Result = () => {
             key={k}
             title={
               <div className="scl-90-title">
-                {k !== "OTHER" ? (
-                  <Tag color="primary" className="qualitative average">
-                    {result.symptomsAverage[k].toFixed(2)}
-                  </Tag>
-                ) : null}
-
-                {k !== "OTHER" ? (
+                {k !== 'OTHER' ? (
                   result.symptomsAverage[k] >= 2 ? (
                     <Tag color="danger" className="qualitative">
                       阳性
@@ -143,9 +139,23 @@ const Scl90Result = () => {
                   )
                 ) : null}
 
-                <span className="scl-90-title__name">
-                  {interpretation.symptoms[k].name}
-                </span>
+                {k !== 'OTHER' ? (
+                  suspense(
+                    <LazyBadge
+                      right={15}
+                      badge={result.symptomsAverage[k].toFixed(2)}
+                      content={
+                        <span className="scl-90-title__name">
+                          {interpretation.symptoms[k].name}
+                        </span>
+                      }
+                    />,
+                  )
+                ) : (
+                  <span className="scl-90-title__name">
+                    {interpretation.symptoms[k].name}
+                  </span>
+                )}
               </div>
             }
           >
@@ -154,7 +164,7 @@ const Scl90Result = () => {
         ))}
       </Collapse>
     </div>
-  );
-};
+  )
+}
 
-export default Scl90Result;
+export default Scl90Result
