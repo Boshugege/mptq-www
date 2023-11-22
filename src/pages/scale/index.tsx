@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { NavBar, Grid, Button } from 'antd-mobile'
+import { NavBar, Grid, Button, NoticeBar } from 'antd-mobile'
 import suspense from '~/advance/suspense'
 import {
   Lazy16pfScale,
@@ -13,6 +14,7 @@ import {
 } from '~/pages'
 import { api } from '~/utils'
 import './index.scss'
+import Alert from '~/components/alert'
 
 const Scale = () => {
   const { path } = useParams() as { path: Path }
@@ -26,6 +28,8 @@ const Scale = () => {
   const [calculateResult, setCalculateResult] = useState<CalculateResult<
     typeof path
   > | null>(null)
+
+  const [instruction, setInstruction] = useState<ReactNode[] | null>(null)
 
   const [autoNext, setAutoNext] = useState(true)
 
@@ -77,6 +81,26 @@ const Scale = () => {
       return () => clearTimeout(timer)
     }
   }, [currentIndex, values])
+
+  useEffect(() => {
+    if (!scale) return
+    if (!scale.instruction && !scale.warning) return
+
+    const message = scale.instruction ?? scale.warning
+
+    const instruction: ReactNode[] = [
+      <NoticeBar
+        color="alert"
+        content="您的测试结果本小程序不会保存，请一定根据自己的实际情况回答，否则测试结果不具有参考性。"
+      />,
+    ]
+
+    typeof message === 'string'
+      ? instruction.push(message!)
+      : instruction.push(...message!)
+
+    setInstruction(instruction)
+  }, [scale])
 
   if (!scale || currentIndex === -1) {
     return null
@@ -258,6 +282,14 @@ const Scale = () => {
           )
         ) : (
           <>
+            {instruction ? (
+              <Alert
+                title="测试需知"
+                wait={5}
+                content={instruction}
+                defaultShow
+              />
+            ) : null}
             {suspense(render())}
             <Grid columns={12} gap={8} style={{ marginTop: 10 }}>
               <Grid.Item span={5}>

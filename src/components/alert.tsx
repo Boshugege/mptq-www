@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react";
-import type { ReactNode } from "react";
-import { Dialog, NoticeBar } from "antd-mobile";
+import { useState, useEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
+import { Dialog, NoticeBar } from 'antd-mobile'
 
 interface AlertProps {
-  wait?: number;
-  title?: string;
-  warning?: string;
-  content: ReactNode[];
-  defaultShow?: boolean;
-  onClose?: () => void;
+  wait?: number
+  title?: string
+  warning?: string
+  content: ReactNode[]
+  defaultShow?: boolean
+  onClose?: () => void
 }
 
 const Alert = ({
@@ -19,32 +19,32 @@ const Alert = ({
   defaultShow,
   onClose,
 }: AlertProps) => {
-  const [second, setSecond] = useState(wait);
+  const [second, setSecond] = useState(wait)
 
-  const [show, setShow] = useState(defaultShow);
+  const [show, setShow] = useState(defaultShow)
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    if (!second || second < 0) return;
+    if (!second || second < 0) return
 
-    let current = second;
+    let current = second
 
     timerRef.current = setInterval(() => {
-      current--;
-      setSecond(current);
-    }, 1000);
+      current--
+      setSecond(current)
+    }, 1000)
 
     return () => {
-      timerRef.current && clearInterval(timerRef.current);
-    };
-  }, []);
+      timerRef.current && clearInterval(timerRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (second === 0) {
-      timerRef.current && clearInterval(timerRef.current);
+      timerRef.current && clearInterval(timerRef.current)
     }
-  }, [second]);
+  }, [second])
 
   return (
     <Dialog
@@ -52,26 +52,26 @@ const Alert = ({
       title={title}
       actions={[
         {
-          key: "confirm",
-          text: second ? `${second}s` : wait ? "我真知道了" : "我知道了",
+          key: 'confirm',
+          text: second ? `${second}s` : wait ? '我真知道了' : '我知道了',
           disabled: second !== undefined ? second > 0 : false,
         },
       ]}
       onAction={() => {
-        if (second) return;
-        setShow(false);
+        if (second) return
+        setShow(false)
       }}
       onClose={() => {
-        setShow(false);
-        onClose?.();
+        setShow(false)
+        onClose?.()
       }}
       content={
         <>
-          {warning ? <NoticeBar content={warning} /> : null}
+          {warning ? <NoticeBar color="alert" content={warning} /> : null}
 
-          <div style={{ padding: "1rem" }}>
+          <div style={{ padding: '1rem' }}>
             {content.map((s, i) =>
-              typeof s === "string" ? (
+              typeof s === 'string' ? (
                 <div key={i} className="indent">
                   {s}
                 </div>
@@ -83,7 +83,7 @@ const Alert = ({
         </>
       }
     />
-  );
-};
+  )
+}
 
-export default Alert;
+export default Alert
