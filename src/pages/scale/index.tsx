@@ -41,13 +41,15 @@ const Scale = () => {
   const [renderScale, setRenderScale] = useState(false)
 
   useEffect(() => {
+    if (scale) return
+
     api<Scale<InferQuestion<typeof path>, InferInterpretation<typeof path>>>(
       '/' + path,
     ).then((data) => {
       setScale(data)
       setCurrentIndex(0)
     })
-  }, [])
+  }, [path, scale])
 
   const navigate = useNavigate()
 
@@ -90,17 +92,21 @@ const Scale = () => {
   }, [currentIndex, values])
 
   useEffect(() => {
-    if (!scale) return
+    // 严格模式下，scale 会被 set 两次，scale 数据虽然不变，
+    // 但是对象地址会不同，所以此 hook 会执行两次，导致 instruction
+    // 里会添加两次 instruction 或 warning。
+    // 为避免此情况，应在 instruction.length === 1 时才 set instruction
+    if (!scale || instruction.length > 1) return
     if (!scale.instruction && !scale.warning) return
 
-    const message = scale.instruction ?? scale.warning
-
     setInstruction((pre) => {
-      const texts = typeof message === 'string' ? [message!] : message!
+      if (scale.instruction) return [...pre, ...scale.instruction]
 
-      return [...pre, ...texts]
+      if (scale.warning) return [...pre, scale.warning]
+
+      return pre
     })
-  }, [scale])
+  }, [scale, instruction.length])
 
   if (!scale || currentIndex === -1) {
     return null
