@@ -72,7 +72,9 @@ const Scale = () => {
       values[currentIndex + 1] === undefined
     ) {
       // 延迟 50ms 切换下一题，方便 radio 渲染完成
-      setTimeout(() => toNext(), 50)
+      const timer = setTimeout(() => toNext(), 50)
+
+      return () => clearTimeout(timer)
     }
   }, [currentIndex, values])
 
