@@ -60,9 +60,6 @@ const Alert = ({
       onAction={() => {
         if (second) return
         setShow(false)
-      }}
-      onClose={() => {
-        setShow(false)
         onClose?.()
       }}
       content={

@@ -10,7 +10,7 @@ import {
   Grid,
 } from 'antd-mobile'
 import type { DatePickerRef } from 'antd-mobile'
-import { randomChoice, randomInt } from '~/utils'
+import { randomChoice, randomInt, subtractYears } from '~/utils'
 import Question from './question'
 import { calculateAge, calculateEpqRscResult } from '.'
 import { useNavigate } from 'react-router-dom'
@@ -159,7 +159,7 @@ const EpqRscScale = ({
                 ) : (
                   <DatePicker
                     min={new Date(1923, 0, 1)}
-                    max={new Date()}
+                    max={subtractYears(new Date(), 16)}
                     onConfirm={(val) => {
                       const age = calculateAge(val)
                       setAge(age)

@@ -29,9 +29,16 @@ const Scale = () => {
     typeof path
   > | null>(null)
 
-  const [instruction, setInstruction] = useState<ReactNode[] | null>(null)
+  const [instruction, setInstruction] = useState<ReactNode[]>([
+    <NoticeBar
+      color="alert"
+      content="您的测试结果本小程序不会保存，请一定根据自己的实际情况回答，否则测试结果不具有参考性。"
+    />,
+  ])
 
   const [autoNext, setAutoNext] = useState(true)
+
+  const [renderScale, setRenderScale] = useState(false)
 
   useEffect(() => {
     api<Scale<InferQuestion<typeof path>, InferInterpretation<typeof path>>>(
@@ -88,18 +95,11 @@ const Scale = () => {
 
     const message = scale.instruction ?? scale.warning
 
-    const instruction: ReactNode[] = [
-      <NoticeBar
-        color="alert"
-        content="您的测试结果本小程序不会保存，请一定根据自己的实际情况回答，否则测试结果不具有参考性。"
-      />,
-    ]
+    setInstruction((pre) => {
+      const texts = typeof message === 'string' ? [message!] : message!
 
-    typeof message === 'string'
-      ? instruction.push(message!)
-      : instruction.push(...message!)
-
-    setInstruction(instruction)
+      return [...pre, ...texts]
+    })
   }, [scale])
 
   if (!scale || currentIndex === -1) {
@@ -282,15 +282,14 @@ const Scale = () => {
           )
         ) : (
           <>
-            {instruction ? (
-              <Alert
-                title="测试需知"
-                wait={5}
-                content={instruction}
-                defaultShow
-              />
-            ) : null}
-            {suspense(render())}
+            <Alert
+              title="测试需知"
+              wait={5}
+              content={instruction}
+              onClose={() => setRenderScale(true)}
+              defaultShow
+            />
+            {renderScale ? suspense(render()) : null}
             <Grid columns={12} gap={8} style={{ marginTop: 10 }}>
               <Grid.Item span={5}>
                 <Button
